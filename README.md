@@ -1,2 +1,3 @@
 # NodeJS
-A place where I store my projects and learning process
+
+facerecognition-backend - Face recognition app that runs with a node.js server (login, register, upload counts)
