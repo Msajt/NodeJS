@@ -4,9 +4,11 @@ const fs = require('fs');
 const path = require('path');
 //! Requirindo o módulo 'csv-parse'
 const { parse } = require('csv-parse');
+//! Importando o schema do mongoose dos planetas
+const planets = require('./planets.mongo');
 
 //! Array contendo os dados do .csv do Kepler
-const habitablePlanets = [];
+//const habitablePlanets = [];
 
 //! Construindo uma função para verificar se o planeta é habitável
 function isHabitablePlanet(planet){
@@ -47,28 +49,50 @@ function loadPlanetsData(){
             columns: true,
         })) 
             //* Agora os dados serão baseados dentro do parse() num array de objetos
-        .on('data', (data) => {
+        .on('data', async (data) => {
             //? Importando os dados do .csv caso o planeta for habitável
-            isHabitablePlanet(data) ? 
-                habitablePlanets.push(data) : null;
+            if(isHabitablePlanet(data)){
+                savePlanet(data);
+            }
         })
             //? Exibindo erro, caso houver
         .on('error', err => {
             console.log(err);
             reject(err);
         })
-        .on('end', () => {
+        .on('end', async () => {
             //? Exibindo os resultados no console
+            const countPlanetsFound = (await getAllPlanets()).length;
                 //* Retornando a quantidade de planetas encontrados
-            console.log(`Foram encontrados ${habitablePlanets.length} planetas habitaveis!`);
+            console.log(`Foram encontrados ${countPlanetsFound} planetas habitaveis!`);
                 //* Resolvendo a promise
             resolve();
         });
     });
 }
 
-function getAllPlanets(){
-    return habitablePlanets;
+async function getAllPlanets(){
+    //? Usando o .find, por default retorna tudo
+        //* model.find({ definitions })
+    return await planets.find({}, {
+        '_id': 0, '__v': 0,
+    });
+}
+
+async function savePlanet(planet){
+    try{
+        //TODO: Replace below create with insert + update = upsert
+        //? Adiciona dados no documento
+        await planets.updateOne({
+            keplerName: planet.kepler_name,
+        }, {
+            keplerName: planet.kepler_name,
+        }, {
+            upsert: true,
+        });
+    } catch(err){
+        console.error(`Could not save the planet ${err}`);
+    }
 }
 
 module.exports = {

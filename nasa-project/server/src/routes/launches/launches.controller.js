@@ -1,14 +1,14 @@
 //! Importando os dados de lançamentos
-const { getAllLaunches, addNewLaunch, existsLaunchWithId, abortLaunchById } = require('../../models/launches.model');
+const { getAllLaunches, existsLaunchWithId, abortLaunchById, scheduleNewLaunch } = require('../../models/launches.model');
 
 //! Função que retorna os lançamentos
-function httpGetAllLaunches(req, res){
+async function httpGetAllLaunches(req, res){
     //? Pega os valores do map de lançamentos e o transforma em array para poder exibir em JSON
-    res.status(200).json(Array.from(getAllLaunches()));
+    res.status(200).json(Array.from(await getAllLaunches()));
 }
 
 //! Função que envia o método para adicionar lançamento
-function httpAddNewLaunch(req, res){
+async function httpAddNewLaunch(req, res){
     //? Coletando o valor do request
     const launch = req.body
 
@@ -31,27 +31,38 @@ function httpAddNewLaunch(req, res){
     }
     
     //? Adicionando o novo lançamento no banco de dados
-    addNewLaunch(launch);
+    await scheduleNewLaunch(launch);
+    console.log(launch);
 
     //? Servidor responde com sucesso (201 - Created)
     return res.status(201).json(launch);
 }
 
-function httpAbortLaunch(req, res){
+async function httpAbortLaunch(req, res){
     //? Pegando o id do lançamento
     const launchId = Number(req.params.id);
+    
+    //? Verificando se o lançamento existe
+    const existsLaunch = await existsLaunchWithId(launchId);
 
     //? Se o lançamento não existir
-    if(!existsLaunchWithId(launchId)){
+    if(!existsLaunch){
         return res.status(404).json({
             error: 'Launch not found',
         })
     }
 
     //? Se o lançamento existir
-    const aborted = abortLaunchById(launchId);
+    const aborted = await abortLaunchById(launchId);
+
+    //? Caso de erro
+    if(!aborted) return res.status(400).json({
+        error: 'Launch not aborted',
+    })
     //? Retornando status de sucesso 
-    return res.status(200).json(aborted);
+    return res.status(200).json({
+        ok: true,
+    });
 }
 
 //! Exportando o módulo

@@ -1,21 +1,26 @@
 //TODO Vamos separar as funcionalidades do server e do express
-//! Importando 'http' e o 'app' (funções do express)
+//! Importando 'http', 'app' (funções do express), 'mongoose' (gerenciar database)
 const http = require('http');
 const app = require('./app');
-
+//! Importando informações do mongoose
+const { mongoConnect } = require('./services/mongo');
 //! Importando os dados dos planetas
 const { loadPlanetsData } = require('./models/planets.model');
+
 
 //! Definindo a porta do servidor
 //?     Pode ser definida por aqui, ou pelo 'package.json'
 const PORT = process.env.PORT || 8000; // Tem que ser diferente do frontend (3000)
 
 //! Declarando o servidor
-//?     Os requests serão feitos pelo 'app', assim podemos organizar os requests
+    //? Os requests serão feitos pelo 'app', assim podemos organizar os requests
 const server = http.createServer(app);
 
 //? Esperando carregar os planetas para poder carregar o servidor
 async function startServer(){
+    //? Inicializando o banco de dados
+    await mongoConnect();
+
     //? Esperando o setup dos planetas
     await loadPlanetsData();
 
