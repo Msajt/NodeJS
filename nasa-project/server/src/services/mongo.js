@@ -1,7 +1,9 @@
 const mongoose = require('mongoose');
 
+require('dotenv').config();
+
 //! Definindo url do MongoDB
-const MONGO_URL = 'mongodb+srv://nasa-api:eXVYyqSYHGpGmhNI@ztmproject.8nvvs.mongodb.net/nasa?retryWrites=true&w=majority';
+const MONGO_URL = process.env.MONGO_URL;
 
 //! Event Emitters para o Mongoose
     //? Quando inicializa

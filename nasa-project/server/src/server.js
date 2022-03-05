@@ -1,12 +1,14 @@
 //TODO Vamos separar as funcionalidades do server e do express
-//! Importando 'http', 'app' (funções do express), 'mongoose' (gerenciar database)
+//! Importando 'http', 'dotenv', 'app' (funções do express), 'mongoose' (gerenciar database)
 const http = require('http');
+require('dotenv').config();
 const app = require('./app');
 //! Importando informações do mongoose
 const { mongoConnect } = require('./services/mongo');
 //! Importando os dados dos planetas
 const { loadPlanetsData } = require('./models/planets.model');
-
+//! Importando os dados dos lançamentos do SpaceX
+const { loadLaunchData } = require('./models/launches.model');
 
 //! Definindo a porta do servidor
 //?     Pode ser definida por aqui, ou pelo 'package.json'
@@ -23,6 +25,9 @@ async function startServer(){
 
     //? Esperando o setup dos planetas
     await loadPlanetsData();
+
+    //? Aguardando setup da API do SpaceX
+    await loadLaunchData();
 
     //! Servidor fazendo o listening das conexões
     server.listen(PORT, () => {

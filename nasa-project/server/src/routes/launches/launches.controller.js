@@ -1,10 +1,14 @@
 //! Importando os dados de lançamentos
 const { getAllLaunches, existsLaunchWithId, abortLaunchById, scheduleNewLaunch } = require('../../models/launches.model');
+const { getPagination } = require('../../services/query');
 
 //! Função que retorna os lançamentos
 async function httpGetAllLaunches(req, res){
+    const { skip, limit } = getPagination(req.query);
+    const launches = await getAllLaunches(skip, limit);
+    
     //? Pega os valores do map de lançamentos e o transforma em array para poder exibir em JSON
-    res.status(200).json(Array.from(await getAllLaunches()));
+    res.status(200).json(Array.from(launches));
 }
 
 //! Função que envia o método para adicionar lançamento
