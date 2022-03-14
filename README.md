@@ -7,4 +7,5 @@
 **5. _http-server_ -** pure nodeJS HTTP server </br>
 **6. _sec-ex_ -** security and authentication with NodeJS (passport, helmet.js, oauth 2.0)
 **7. _nasa-project_ -** rocket launcher controller, the client frontend was provided and I only followed the server side
+**8. _graphql-ex_ -** server built using Apollo and GraphQL
 
