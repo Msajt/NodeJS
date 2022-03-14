@@ -1,0 +1,26 @@
+#! Query includes everything that reads data
+type Query {
+    products: [ Product ]
+    #? function_name(variable_name: var_type): [ return_type ]
+    productsByPrice(min: Float!, max: Float!): [ Product ]
+    productById(id: ID!): Product
+}
+
+#! Mutation includes everything that changes data
+type Mutation {
+    addNewProduct(id: ID!, description: String!, price: Float!): Product
+    addNewProductReview(id: ID!, rating: Int!, comment: String): Review
+}
+
+type Product {
+    id: ID!
+    description: String!
+    reviews: [ Review ]
+    price: Float!
+    #? ! após significa required
+}
+
+type Review {
+    rating: Int!
+    comment: String
+}
