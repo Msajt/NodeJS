@@ -8,4 +8,5 @@
 **6. _sec-ex_ -** security and authentication with NodeJS (passport, helmet.js, oauth 2.0) </br>
 **7. _nasa-project_ -** rocket launcher controller, the client frontend was provided and I only followed the server side </br>
 **8. _graphql-ex_ -** server built using Apollo and GraphQL </br>
+**9. _pong-sockets_ -** pong game using sockets.io, the frontend was provided, few modifications were made
 
